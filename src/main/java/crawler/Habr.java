@@ -1,3 +1,5 @@
+package crawler;
+
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -40,7 +42,6 @@ public class Habr {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private static String getText(Document jDoc) {
