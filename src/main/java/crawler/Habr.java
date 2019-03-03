@@ -14,7 +14,7 @@ public class Habr {
         Document doc;
         int exceptionCounter = 0;
         int counter = 1;
-        int articleCount = 80;
+        int articleCount = 100;
         String url;
 
         for (int i = 100000; counter < articleCount + 1 && i < 360000;  i++) {

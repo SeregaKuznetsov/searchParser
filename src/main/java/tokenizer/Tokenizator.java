@@ -1,15 +1,19 @@
 package tokenizer;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class Tokenizator {
 
     public static void main(String[] args) {
 
-        for (int i = 1; i <= 80; i ++) {
+        Arrays.stream(new File("src/main/resources/tokenizedArticles").listFiles()).forEach(File::delete);
+
+        for (int i = 1; i <= 100; i ++) {
             StringBuilder stringBuilder = new StringBuilder();
             String article = readArticle("src/main/resources/articles/" + i + ".txt");
             String[] words = article.split(" ");
@@ -39,7 +43,19 @@ public class Tokenizator {
             .replace("%", "")
             .replace("→", "")
             .replace("«", "")
+            .replace("»", "")
+            .replace("   ", "")
             .replace("…", "")
+            .replace("\\", "")
+            .replace("/", "")
+            .replace("\"", "")
+            .replace("*", "")
+            .replace(">", "")
+            .replace("|", "")
+            .replace("<", "")
+            .replace(" ", "")
+            .replace(" ", "")
+            .replace("$", "")
             .replace("...", "");
         if (!(word.equals("–")) && !word.equals("—")) {
             return word;
