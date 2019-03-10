@@ -1,11 +1,15 @@
 package dictionary;
 
+import utils.Util;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
+
+import static utils.Util.readArticle;
 
 public class Dictionary {
 
@@ -31,6 +35,33 @@ public class Dictionary {
 
     }
 
+    public static void parseForLink(String vector) {
+        try (BufferedReader r = Files.newBufferedReader(Paths.get("src/main/resources/articles/index.txt"))) {
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < vector.length(); i++) {
+            if (vector.charAt(i) == '1') {
+                System.out.println(r.readLine());
+            } else {
+                r.readLine();
+            }
+        }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void parse(String vector) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < vector.length(); i++) {
+            if (vector.charAt(i) == '1') {
+                sb.append("src/main/resources/tokenizedArticles/").append(i + 1).append(".txt").append("\n");
+            }
+        }
+        System.out.println(sb.toString());
+    }
+
     public static String simpleFindArticle(String query) {
         StringBuilder sb = new StringBuilder();
         File f = new File("src/main/resources/dictionary/" + query + ".txt");
@@ -46,37 +77,54 @@ public class Dictionary {
         return "К сожалению, ничего не удалось найти по запросу " + query;
     }
 
-//    private static void findArticles(String query) {
-//        String[] words = query.split(" ");
-//        Set<String> mathesSet = new HashSet<>();
-//
-//        for (int i = 0; i < words.length; i++) {
-//            mathesSet.addAll(findArticlesByWord(words[i]));
-//        }
-//
-//        if (!mathesSet.isEmpty()) {
-//
-//        } else {
-//            return "К сожалению, ничего не удалось найти по запросу " + query;
-//        }
-//
-//
-//    }
+    public static void findArticles(String query) {
+        String[] words = query.split(" ");
+        List<String> mathesSet = new ArrayList<>();
 
-//    private static Set<String> findArticlesByWord(String word) {
-//        Set<String> results = new HashSet<>();
-//        File f = new File("src/main/resources/dictionary/" + word + ".txt");
-//        if(f.exists() && !f.isDirectory()) {
-//            String doc = readArticle(f.getPath());
-//            for (int i = 0; i < doc.length(); i++) {
-//                if (doc.charAt(i) == '1') {
-//                    results.add(String.valueOf(i));
-//                }
-//            }
-//            return results;
-//        }
-//        return null;
-//    }
+        for (int i = 0; i < words.length; i++) {
+            mathesSet.add(findArticlesByWord(words[i]));
+        }
+
+        for (int i = 0; i < mathesSet.size(); i++) {
+            System.out.println("vector for word " + i + ": " + mathesSet.get(i));
+        }
+
+
+        if (!mathesSet.isEmpty()) {
+            String singleResult = "";
+
+            for (int i = 0; i < getDocsCount("src/main/resources/tokenizedArticles"); i++) {
+                char firstChar = '1';
+                int matchCount = 0;
+                for (String s : mathesSet) {
+                    if (s.charAt(i) == firstChar) {
+                        matchCount++;
+                    } else {
+                        singleResult += '0';
+                        break;
+                    }
+                }
+
+                if (matchCount == mathesSet.size()) {
+                    singleResult += '1';
+                }
+            }
+
+            System.out.println("     total result: " + singleResult);
+            parseForLink(singleResult);
+        } else {
+            System.out.println("К сожалению, ничего не удалось найти по запросу " + query);
+        }
+    }
+
+    private static String findArticlesByWord(String word) {
+        Set<String> results = new HashSet<>();
+        File f = new File("src/main/resources/dictionary/" + word + ".txt");
+        if(f.exists() && !f.isDirectory()) {
+            return readArticle(f.getPath());
+        }
+        return null;
+    }
 
     private static void saveCurrentDictionary(int docsCounter) {
         File f = null;
@@ -89,17 +137,6 @@ public class Dictionary {
 
     private static void clearCurrentDictionary() {
         dictionary.clear();
-    }
-
-    private static String readArticle(String filePath) {
-        String content = null;
-        try {
-            content = Files.lines(Paths.get(filePath)).reduce("", String::concat);
-            return content;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private static void showDictionary() {
