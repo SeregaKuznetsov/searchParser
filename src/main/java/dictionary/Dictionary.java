@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static utils.Util.parseForLink;
 import static utils.Util.readArticle;
 
 public class Dictionary {
@@ -35,22 +36,7 @@ public class Dictionary {
 
     }
 
-    public static void parseForLink(String vector) {
-        try (BufferedReader r = Files.newBufferedReader(Paths.get("src/main/resources/articles/index.txt"))) {
 
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < vector.length(); i++) {
-            if (vector.charAt(i) == '1') {
-                System.out.println(r.readLine());
-            } else {
-                r.readLine();
-            }
-        }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static void parse(String vector) {
         StringBuilder sb = new StringBuilder();

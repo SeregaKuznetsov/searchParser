@@ -19,6 +19,15 @@ public class Stemmer {
     private static final Pattern P = Pattern.compile("ь$");
     private static final Pattern NN = Pattern.compile("нн$");
 
+    public static String stemQuery(String query) {
+        String result = "";
+        String[] words = query.split(" ");
+        for (String word : words) {
+            result += stem(word) + " ";
+        }
+        return result;
+    }
+
     public static String stem(String word) {
         word = word.toLowerCase();
         word = word.replace('ё', 'е');

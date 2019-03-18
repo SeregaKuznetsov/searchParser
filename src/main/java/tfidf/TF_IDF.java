@@ -1,10 +1,8 @@
 package tfidf;
 
-import tokenizer.Stemmer;
 import utils.Util;
 
 import java.io.File;
-import java.sql.SQLOutput;
 import java.text.DecimalFormat;
 
 import static utils.Util.readArticle;
@@ -76,5 +74,71 @@ public class TF_IDF {
             }
         }
         return tf_idf_vector;
+    }
+
+    public static String getTfIdfVector(String tf_vector, String idf_vector) {
+        StringBuilder vector = new StringBuilder();
+        String[] tfValues = tf_vector.split(" ");
+        String[] tf_idfValues = idf_vector.split(" ");
+        for (int i = 0; i < tfValues.length; i++) {
+            vector.append(Double.valueOf(tfValues[i]) * Double.valueOf(tf_idfValues[i])).append(" ");
+        }
+        return vector.toString();
+    }
+
+    public static String getTfIdfVector(String stemmedQuery, double tfValue) {
+        String[] query_words = stemmedQuery.split(" ");
+        StringBuilder vector = new StringBuilder();
+        File dir = new File("src/main/resources/tfidf");
+        File[] arrFiles = dir.listFiles();
+        for (File arrFile : arrFiles) {
+            double tfIdfValue = 0;
+            for (int i = 0; i < query_words.length; i++) {
+                if (arrFile.getName().equals(query_words[i] + ".txt")) {
+                    tfIdfValue = getIdfOfTerm(query_words[i]) * tfValue;
+                    break;
+                }
+            }
+            vector.append(tfIdfValue).append(" ");
+        }
+        return vector.toString();
+    }
+
+    public static String getTfVector(String stemmedQuery) {
+        StringBuilder vector = new StringBuilder();
+        String[] words = stemmedQuery.split(" ");
+        for (String word : words) {
+            vector.append(1.0 / words.length).append(" ");
+        }
+        return vector.toString();
+    }
+
+    public static String getIdfVector(String stemmedQuery) {
+        StringBuilder vector = new StringBuilder();
+        String[] words = stemmedQuery.split(" ");
+        for (String word : words) {
+            vector.append(getIdfOfTerm(word)).append(" ");
+        }
+        return vector.toString();
+    }
+
+    private static double getIdfOfTerm(String word) {
+        String vector = readArticle("src/main/resources/dictionary/" + word + ".txt");
+        if (vector != null) {
+            return getIdf(vector);
+        } else {
+            try {
+                throw new Exception("Not such word in the dictionary");
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
+        }
+        return -1;
+    }
+
+    public static double getTfValue(String stemmedQuery) {
+        String[] words = stemmedQuery.split(" ");
+        return 1.0 / words.length;
     }
 }

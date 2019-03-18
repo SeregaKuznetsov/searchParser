@@ -9,7 +9,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         System.out.println("Введите слова, которые хотели бы найти");
         String query = sc.nextLine();
-        Dictionary.findArticles(Stemmer.stem(query));
+        Dictionary.findArticles(Stemmer.stemQuery(query));
 //        System.out.println(Dictionary.simpleFindArticle(query));
     }
 }
