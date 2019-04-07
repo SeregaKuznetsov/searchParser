@@ -25,10 +25,10 @@ public class Main {
     public static void main(String[] args) {
         Map<String, Double> rankedPages = new HashMap<>();
         Scanner sc = new Scanner(System.in);
-        System.out.println("Введите запрос");
-        String query = sc.nextLine();
+//        System.out.println("Введите запрос");
+//        String query = sc.nextLine();
 
-//        String query = "Сегодня праздник у программистов";
+        String query = "Сегодня праздник у программистов";
 //        String query = "Тестирование новой фичи";
         String stemmedQuery = Stemmer.stemQuery(query);
         double tfValue = TF_IDF.getTfValue(stemmedQuery);

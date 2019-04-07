@@ -1,11 +1,10 @@
 package utils;
 
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -77,5 +76,81 @@ public class Util {
             e.printStackTrace();
         }
         return "-1";
+    }
+
+    public static String getDocNumberFromLink(String link) {
+        String line;
+        try (BufferedReader r = Files.newBufferedReader(Paths.get("src/main/resources/articles/index.txt"))) {
+            while ((line = r.readLine()) != null){
+                if (line.contains(link)) {
+                    return line.substring(0, line.indexOf("."));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "-1";
+    }
+
+    public static void arrayToFile(String dirName, int[][] board) {
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < board.length; i++)//for each row
+        {
+            for(int j = 0; j < board.length; j++)//for each column
+            {
+                builder.append(board[i][j]+"");//append to the output string
+                if(j < board.length - 1)//if this is not the last row element
+                    builder.append(" ");//then add comma (if you don't like commas you can use spaces)
+            }
+            builder.append("\n");//append new line at the end of the row
+        }
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(dirName));
+            writer.write(builder.toString());//save the string representation of the board
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int[][] readArrayFromFile(String fileName) {
+        int[][] board = new int[100][100];
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(fileName));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String line = "";
+        int row = 0;
+        while(true)
+        {
+            try {
+                if (!((line = reader.readLine()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String[] cols = line.split(" "); //note that if you have used space as separator you have to split on " "
+            int col = 0;
+            for(String  c : cols)
+            {
+                board[row][col] = Integer.parseInt(c);
+                col++;
+            }
+            row++;
+        }
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return board;
+    }
+
+    public static void printList(ArrayList<String> list) {
+        for (String s : list) {
+            System.out.println(s);
+        }
     }
 }
